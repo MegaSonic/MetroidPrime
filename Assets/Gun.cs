@@ -13,7 +13,7 @@ public class Gun : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetButtonDown("Fire"))
         {
             GameObject bulletObject = Instantiate(bullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
             Bullet bulletComponent = bulletObject.GetComponent<Bullet>();

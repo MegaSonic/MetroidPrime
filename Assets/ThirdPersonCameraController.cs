@@ -23,6 +23,8 @@ public class ThirdPersonCameraController : MonoBehaviour {
     Transform dummyCamera;
 
     Transform lookAt;
+
+
     Vector3 followDistanceVector;
 
     Vector3 velocity;
@@ -35,7 +37,7 @@ public class ThirdPersonCameraController : MonoBehaviour {
 
     private void Awake()
     {
-        lookAt = GameObject.Find("LookAt").GetComponent<Transform>();
+        lookAt = GameObject.Find("LookAt").transform;
     }
 
     // Use this for initialization
@@ -45,8 +47,8 @@ public class ThirdPersonCameraController : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {        
         followDistanceVector = Vector3.forward * -followDistance;
-        moveX += Input.GetAxis("Camera X") * sensitivity;
-        moveY += Input.GetAxis("Camera Y") * sensitivity;
+        moveX += Input.GetAxis("Camera Y") * sensitivity;
+        moveY += Input.GetAxis("Camera X") * sensitivity;
         moveX = Mathf.Clamp(moveX, -maxY, maxY);
         //moveY = Mathf.Clamp(moveY, -maxX, maxX);
         Vector3 newPosition = lookAt.position + Quaternion.Euler(moveX, moveY, 0) * followDistanceVector;

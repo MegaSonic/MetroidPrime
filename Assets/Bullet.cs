@@ -16,22 +16,35 @@ public class Bullet : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        IShootable shootable = other.GetComponent<IShootable>();
-        if (shootable != null)
-        {
-            shootable.Shoot();
-            Destroy(this.gameObject);
-        }
+
     }
 
     // Update is called once per frame
     void Update () {
         deathTimer += Time.deltaTime;
-        if (deathTimer > 10f) Destroy(this.gameObject);    
+        if (deathTimer > 10f) Destroy(this.gameObject);
+
+        RaycastHit info = new RaycastHit();
+        Debug.DrawRay(transform.position, rigid.velocity * Time.deltaTime, Color.green);
+        if (Physics.Raycast(this.transform.position, rigid.velocity, out info, rigid.velocity.magnitude * Time.deltaTime))
+        {
+            IShootable shootable = info.collider.GetComponent<IShootable>();
+            if (shootable != null)
+            {
+                shootable.Shoot();
+                Destroy(this.gameObject);
+            }
+
+            if (info.collider != null)
+            {
+                Destroy(this.gameObject);
+            }
+        }
     }
 
     public void Shoot(Vector3 direction)
     {
+        
         rigid.velocity = direction * speed;
     }
 }

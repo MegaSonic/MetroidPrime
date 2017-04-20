@@ -12,6 +12,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
     {
         public float speed;
 
+        [SerializeField]
+        private Transform morphBall;
+
+        public Transform lookAt;
+        public Camera thirdPersonCamera;
+
         [SerializeField] private bool m_IsWalking;
         [SerializeField] private float m_WalkSpeed;
         [SerializeField] private float m_RunSpeed;
@@ -63,6 +69,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
+            if (Input.GetButtonDown("Switch"))
+            {
+                morphBall.gameObject.SetActive(true);
+                morphBall.transform.SetParent(null);
+                this.gameObject.transform.SetParent(morphBall);
+                this.gameObject.SetActive(false);
+                thirdPersonCamera.depth = -1;
+                morphBall.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+                morphBall.rotation = this.transform.rotation;
+            }
+
+
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
