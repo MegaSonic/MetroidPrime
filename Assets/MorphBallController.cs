@@ -5,9 +5,12 @@ using UnityEngine;
 public class MorphBallController : MonoBehaviour {
 
     public float moveForce;
+    public float jumpForce;
+
     public Transform thirdPerson;
     public Transform lookAt;
     public Camera thirdPersonCamera;
+    public Transform foot;
 
     public Vector3 velocity;
 
@@ -15,6 +18,9 @@ public class MorphBallController : MonoBehaviour {
 
     public bool canMove;
     public bool noAxisInput;
+    public bool isGrounded;
+
+    public bool usedBombJump;
 
     private Vector3 movement;
     private Rigidbody rigid;
@@ -34,6 +40,25 @@ public class MorphBallController : MonoBehaviour {
             this.gameObject.SetActive(false);
             thirdPersonCamera.depth = -1;
             thirdPerson.transform.rotation = this.transform.rotation;
+        }
+
+        isGrounded = IsGrounded();
+        if (isGrounded)
+        {
+            usedBombJump = false;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                rigid.AddForce(Vector3.up * jumpForce);
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Jump") && !usedBombJump)
+            {
+                usedBombJump = true;
+                rigid.AddForce(Vector3.up * jumpForce);
+            }
         }
 
         float h = Input.GetAxis("Horizontal");
@@ -59,7 +84,7 @@ public class MorphBallController : MonoBehaviour {
         }
 
 
-        movement = Camera.main.transform.TransformDirection(movement);
+        movement = thirdPersonCamera.transform.TransformDirection(movement);
         movement.y = 0f;
         movement = movement.normalized;
 
@@ -69,5 +94,19 @@ public class MorphBallController : MonoBehaviour {
     private void FixedUpdate()
     {
         rigid.AddForce(movement * moveForce);
+    }
+
+
+    public bool IsGrounded()
+    {
+        Collider[] cols = Physics.OverlapSphere(foot.transform.position, 0.1f);
+        for (int i = 0; i < cols.Length; i++)
+        {
+            if (cols[i].gameObject.layer == LayerMask.NameToLayer("Default"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
